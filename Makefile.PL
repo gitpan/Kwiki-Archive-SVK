@@ -13,4 +13,4 @@ requires    (qw(
     IO::All 0.31
 ));
 
-&WriteAll;
+&WriteAll( sign => 1 );

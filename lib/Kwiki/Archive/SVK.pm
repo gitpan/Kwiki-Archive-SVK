@@ -7,10 +7,7 @@ use SVN::Repos;
 use File::Glob;
 use Time::Local;
 use Kwiki::Archive '-Base';
-our $VERSION = '0.03';
-
-field 'svk_cache_obj' => -1;
-field 'svk_cache_handle' => undef;
+our $VERSION = '0.04';
 
 sub register {
     super;
@@ -149,7 +146,8 @@ sub page_content {
     my ($atime, $mtime) = ($co_file->stat)[8, 9];
     $self->svk( $page, up  => [ $co_file ] );
     $self->svk( $page, revert  => [ $co_file ] );
-    utime($atime, $mtime, $co_file) if $mtime;
+    utime($atime, $mtime, $co_file) 
+      if $mtime and $atime;
 }
 
 sub page_metadata {
@@ -221,7 +219,7 @@ sub timestamp_props {
     my $time = shift;
 
     $time =~ /(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)/ or return;
-    my $gmtime = timegm($6, $5, $4, $3, $2, $1);
+    my $gmtime = timegm($6, $5, $4, $3, $2-1, $1);
 
     return (
         edit_time       => scalar gmtime($gmtime),
@@ -296,9 +294,7 @@ sub svk_handle {
     my $fs = ($svk->{xd}->find_repos('//', 1))[2]->fs;
     my $root = $fs->revision_root($fs->youngest_rev);
     if ($root->check_path("/$subdir") == $SVN::Node::none) {
-        my $pool = SVN::Pool->new_default;
-        $root->make_dir("/$subdir", $pool);
-        $pool->clear;
+        $svk->mkdir( -m => '', "//$subdir");
     }
 
     $obj->{svk_handle} = $svk;
@@ -313,9 +309,25 @@ __DATA__
 
 Kwiki::Archive::SVK - Kwiki Page Archival Using SVK
 
+=head1 VERSION
+
+This document describes version 0.04 of Kwiki::Archive::SVK, released
+September 4, 2004.
+
 =head1 SYNOPSIS
 
+    % cd /path/to/kwiki
+    % kwiki -add Kwiki::Archive::SVK
+
 =head1 DESCRIPTION
+
+This modules provides revision archival for Kwiki, using the B<SVK>
+module and the B<Subversion> file system.  It is recommended to use
+svn version 1.1 or above, for better stability with its C<fsfs>
+file system.
+
+You may wish to install B<Kwiki::Revisions> and B<Kwiki::Diff>
+modules, to show past revisions to users.
 
 =head1 AUTHOR
 

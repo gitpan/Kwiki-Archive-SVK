@@ -13,3 +13,4 @@ MANIFEST			This list of files
 META.yml
 README
 t/compile.t
+SIGNATURE                                Public-key signature (added by MakeMaker)

@@ -1,5 +1,5 @@
----
-version: 0.01
-date:    Thu Jul 22 20:00:40 PDT 2004
-changes:
-- Initial release
+[Changes for 0.04 - 2004-09-04]
+
+* Fixed initialization of repository.
+* Fixed off-by-one error as passed to Time::Local.
+  (Both reported by Greg Matheson)
