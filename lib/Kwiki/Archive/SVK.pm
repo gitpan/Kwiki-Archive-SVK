@@ -1,6 +1,6 @@
 package Kwiki::Archive::SVK;
 use Kwiki::Archive -Base;
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use strict;
 use warnings;
@@ -165,8 +165,7 @@ sub commit {
     my ($page, $message) = @_;
     my $co_file = $page->io->absolute;
     my $props = $self->page_properties($page);
-
-    local $ENV{USER} = $props->{edit_by} || $self->user_name;
+    local $ENV{USER} = $props->{edit_by};# || $self->user_name;
     $message = '' if not defined $message;
 
     # XXX - what about $props->{edit_time}?
@@ -288,11 +287,6 @@ sub svk_handle {
         pages => 'database_directory',
     }->{$subdir} || 'plugin_directory';
 
-    $co_obj->store(
-        io($obj->$method)->absolute,
-        { depotpath => "//$subdir", revision => $repos->fs->youngest_rev },
-    );
-
     # mkdir $subdir if not exists -- refactor back to SVK!
     my $fs = ($svk->{xd}->find_repos('//', 1))[2]->fs;
     my $root = $fs->revision_root($fs->youngest_rev);
@@ -300,16 +294,13 @@ sub svk_handle {
         $svk->mkdir( -m => '', "//$subdir");
     }
 
+    $co_obj->store(
+        io($obj->$method)->absolute,
+        { depotpath => "//$subdir", revision => $repos->fs->youngest_rev },
+    );
+
     $obj->{svk_handle} = $svk;
     return $svk;
-}
-
-sub commit_hook {
-    my $hook = pop;
-    return unless $hook->returned_true;
-    my $page = $self;
-    $self = $page->hub->load_class('archive');
-    $self->commit($page);
 }
 
 sub show_revisions {
@@ -339,8 +330,8 @@ Kwiki::Archive::SVK - Kwiki Page Archival Using SVK
 
 =head1 VERSION
 
-This document describes version 0.10 of Kwiki::Archive::SVK, released
-January 9, 2004.
+This document describes version 0.11 of Kwiki::Archive::SVK, released
+January 13, 2004.
 
 =head1 SYNOPSIS
 
