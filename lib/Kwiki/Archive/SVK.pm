@@ -7,7 +7,7 @@ use SVN::Repos;
 use File::Glob;
 use Time::Local;
 use Kwiki::Archive '-Base';
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub register {
     super;
@@ -23,7 +23,8 @@ sub generate {
     super;
 
     my $rcs_dump = $self->export_rcs;
-    $_->unlink for io($self->plugin_directory)->all;
+    rename($self->plugin_directory => $self->plugin_directory.'.rcs-old')
+        or die "Cannot rename '".$self->plugin_directory."': $!";
 
     SVN::Repos::create(
         $self->plugin_directory, undef, undef, undef, {
@@ -85,7 +86,7 @@ sub export_rcs {
 }
 
 sub empty {
-    not io->catfile($self->plugin_directory, 'db', 'fs-type')->exists;
+    not io->catfile($self->plugin_directory, 'format')->exists;
 }
 
 sub attachments_upload {
@@ -312,8 +313,8 @@ Kwiki::Archive::SVK - Kwiki Page Archival Using SVK
 
 =head1 VERSION
 
-This document describes version 0.05 of Kwiki::Archive::SVK, released
-September 7, 2004.
+This document describes version 0.06 of Kwiki::Archive::SVK, released
+September 20, 2004.
 
 =head1 SYNOPSIS
 
