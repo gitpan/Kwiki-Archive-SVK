@@ -7,7 +7,7 @@ use SVN::Repos;
 use File::Glob;
 use Time::Local;
 use Kwiki::Archive '-Base';
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub register {
     super;
@@ -41,8 +41,8 @@ sub generate {
 
 sub import_rcs {
     my $rcs_dump = shift;
-    my $page = $self->hub->pages->page_class->new($self->hub);
-    my $meta = $self->hub->pages->meta_class->new($self->hub);
+    my $page = $self->hub->pages->page_class->new;
+    my $meta = $self->hub->pages->meta_class->new;
 
     foreach my $id (sort keys %$rcs_dump) {
         local $SIG{__WARN__} = sub { 1 };
@@ -68,7 +68,7 @@ sub export_rcs {
 
     require Kwiki::Archive::Rcs;
     my $rcs = Kwiki::Archive::Rcs->new;
-    my $page = $self->hub->pages->page_class->new($self->hub);
+    my $page = $self->hub->pages->page_class->new;
 
     return {
         map {
@@ -145,7 +145,8 @@ sub page_content {
 
     my ($atime, $mtime) = ($co_file->stat)[8, 9];
     $self->svk( $page, up  => [ $co_file ] );
-    $self->svk( $page, revert  => [ $co_file ] );
+#    XXX - need better conflict resolution
+#    $self->svk( $page, revert  => [ $co_file ] );
     utime($atime, $mtime, $co_file) 
       if $mtime and $atime;
 }
@@ -311,8 +312,8 @@ Kwiki::Archive::SVK - Kwiki Page Archival Using SVK
 
 =head1 VERSION
 
-This document describes version 0.04 of Kwiki::Archive::SVK, released
-September 4, 2004.
+This document describes version 0.05 of Kwiki::Archive::SVK, released
+September 7, 2004.
 
 =head1 SYNOPSIS
 

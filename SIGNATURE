@@ -14,9 +14,9 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 eca7451930b48b4a4e950f89b3bd8a4dd8397ceb Changes
+SHA1 38d33e5be54f001f2ad9c6117eac29e65fc426f5 Changes
 SHA1 54a7fd87271d6878d5e1c2743e8d14f53f750bbe MANIFEST
-SHA1 814aee98dd7ab3c3bc544031aec29f7eeb75e35f META.yml
+SHA1 db077a9fe797bf7c44df6b8df0cb64f31846f586 META.yml
 SHA1 e6f384a811836cbfb9e99afe16108b90c5f3a2a8 Makefile.PL
 SHA1 b16ea72377bb2b88089b6fd7265d12c9a39315ea README
 SHA1 b26ac27e5a57677aa210c0e908b28ff3ba28f03b inc/Module/Install.pm
@@ -27,12 +27,12 @@ SHA1 aabcd47178e4e7b27e340ff5273269c93697c9c1 inc/Module/Install/Makefile.pm
 SHA1 207dfa13341a374fc78325fbeb99bc36659aef2d inc/Module/Install/Metadata.pm
 SHA1 aff9341a15c04faec47089851e43d9d4061337e7 inc/Module/Install/Win32.pm
 SHA1 8e0d347ca21bc18b380d9d1aa5910b8d078a76b7 inc/Module/Install/WriteAll.pm
-SHA1 763bf07d0cc20e4c3cb3673684c4dc1634f6b026 lib/Kwiki/Archive/SVK.pm
+SHA1 7fadf274fa2b346993388dbb9c4936a2b762f37b lib/Kwiki/Archive/SVK.pm
 SHA1 e91d41b98b6d544db4c64262d01954ba86c5c6ed t/compile.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (FreeBSD)
 
-iD8DBQFBOcgvtLPdNzw1AaARAn5EAKCpzrZm/XroRoEEFWDvp/kuWlVPxwCgrdql
-CTPkqEwWL83DvM8g5veB9S0=
-=TiN0
+iD8DBQFBPK13tLPdNzw1AaARAqi4AJ9n/D78KzZGNmQENwChEO5lWfo9qQCgif32
+81TWzCNZ6+9aWVVALNfl+84=
+=nGQb
 -----END PGP SIGNATURE-----
