@@ -1,30 +1,29 @@
 package Kwiki::Archive::SVK;
+use Kwiki::Archive -Base;
+our $VERSION = '0.10';
+
 use strict;
 use warnings;
 use SVK;
 use SVK::XD;
+use SVK::Util qw( traverse_history );
 use SVN::Repos;
 use File::Glob;
 use Time::Local;
-use Kwiki::Archive '-Base';
-our $VERSION = '0.06';
-
-sub register {
-    super;
-    my $registry = shift;
-    $registry->add(page_hook_content => 'page_content');
-    $registry->add(page_hook_metadata => 'page_metadata');
-    $registry->add(attachments_hook_list => 'attachments_list');
-    $registry->add(attachments_hook_upload => 'attachments_upload');
-    $registry->add(attachments_hook_delete => 'attachments_delete');
-}
 
 sub generate {
     super;
 
     my $rcs_dump = $self->export_rcs;
-    rename($self->plugin_directory => $self->plugin_directory.'.rcs-old')
-        or die "Cannot rename '".$self->plugin_directory."': $!";
+    my $path = $self->plugin_directory;
+
+    if (-d $path and File::Glob::bsd_glob("$path/*")) {
+        rename($path => $path.'.rcs-old')
+            or die "Cannot rename '".$self->plugin_directory."': $!";
+    }
+    else {
+        unlink $path;
+    }
 
     SVN::Repos::create(
         $self->plugin_directory, undef, undef, undef, {
@@ -186,16 +185,18 @@ sub revision_numbers {
     my $handle = $self->svk_handle($page);
     my $fs = ($handle->{xd}->find_repos('//', 1))[2]->fs;
     my $path = "/pages/".$page->id;
-
-    my $pool = SVN::Pool->new_default;
-    my $hist = $fs->revision_root($fs->youngest_rev)->node_history($path);
     my @rv;
 
-    $limit = -1 if !$limit;
-    while (($hist = $hist->prev(0)) and $limit--) {
-        push @rv, ($hist->location)[1];
-        $pool->clear;
-    }
+    traverse_history (
+        root     => $fs->revision_root ($fs->youngest_rev),
+        path     => $path,
+        cross    => 0,
+        callback => sub {
+            my ($path, $rev) = @_;
+            push @rv, $rev;
+            1;
+        }
+    );
 
     return \@rv;
 }
@@ -303,7 +304,32 @@ sub svk_handle {
     return $svk;
 }
 
-1;
+sub commit_hook {
+    my $hook = pop;
+    return unless $hook->returned_true;
+    my $page = $self;
+    $self = $page->hub->load_class('archive');
+    $self->commit($page);
+}
+
+sub show_revisions {
+    my $page = $self->pages->current;
+    my $count = 0;
+
+    my $handle = $self->svk_handle($page);
+    my $fs = ($handle->{xd}->find_repos('//', 1))[2]->fs;
+    my $path = "/pages/".$page->id;
+
+    traverse_history (
+        root     => $fs->revision_root ($fs->youngest_rev),
+        path     => $path,
+        cross    => 0,
+        callback => sub { $count++; 1 }
+    );
+
+    $count-- if $count > 0;
+    return $count;
+}
 
 __DATA__
 
@@ -313,8 +339,8 @@ Kwiki::Archive::SVK - Kwiki Page Archival Using SVK
 
 =head1 VERSION
 
-This document describes version 0.06 of Kwiki::Archive::SVK, released
-September 20, 2004.
+This document describes version 0.10 of Kwiki::Archive::SVK, released
+January 9, 2004.
 
 =head1 SYNOPSIS
 
@@ -333,11 +359,11 @@ modules, to show past revisions to users.
 
 =head1 AUTHOR
 
-Autrijus Tang <autrijus@autrijus.org>
+Autrijus Tang E<lt>autrijus@autrijus.orgE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2004.  Autrijus Tang.  All rights reserved.
+Copyright 2004, 2005 by Autrijus Tang.  All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

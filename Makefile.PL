@@ -7,10 +7,9 @@ license     ('perl');
 version_from('lib/Kwiki/Archive/SVK.pm');
 
 requires    (qw(
-    perl    5.6.1
-    SVK     0.17
-    Kwiki   0.33
+    SVK     0.23
+    Kwiki   0.35
     IO::All 0.31
 ));
 
-&WriteAll( sign => 1 );
+&WriteAll;
