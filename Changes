@@ -1,3 +1,8 @@
+[Changes for 0.12 - 2006-10-09]
+
+* Mark Glines here - Audreyt made me a comaintainer.
+* Fix for a crash when using Data::Hierarchy v0.30 or above.
+
 [Changes for 0.11 - 2005-01-13]
 
 Patch from Chia-Liang Kao to make it Really Work (tm).

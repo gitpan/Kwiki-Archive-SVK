@@ -1,6 +1,6 @@
 package Kwiki::Archive::SVK;
 use Kwiki::Archive -Base;
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use strict;
 use warnings;
@@ -295,7 +295,7 @@ sub svk_handle {
     }
 
     $co_obj->store(
-        io($obj->$method)->absolute,
+        io($obj->$method)->absolute->pathname,
         { depotpath => "//$subdir", revision => $repos->fs->youngest_rev },
     );
 
@@ -330,8 +330,8 @@ Kwiki::Archive::SVK - Kwiki Page Archival Using SVK
 
 =head1 VERSION
 
-This document describes version 0.11 of Kwiki::Archive::SVK, released
-January 13, 2004.
+This document describes version 0.12 of Kwiki::Archive::SVK, released
+October 9, 2006.
 
 =head1 SYNOPSIS
 
